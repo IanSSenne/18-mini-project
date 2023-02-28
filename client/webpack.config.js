@@ -3,7 +3,7 @@ const { resolve } = require("path");
 const path = require("path");
 const { GenerateSW, InjectManifest } = require("workbox-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
+const WebpackPwaManifest = require("webpack-pwa-manifest");
 module.exports = () => {
 	return {
 		mode: "development",
@@ -27,8 +27,20 @@ module.exports = () => {
 				swSrc: "./src-sw.js",
 				// more configuration here.
 			}),
-			new HtmlWebpackPlugin(),
+			new HtmlWebpackPlugin({
+				template: "index.ejs",
+				title: "Ultimate todo App?",
+			}),
 			new MiniCssExtractPlugin(),
+			new WebpackPwaManifest({
+				filename: "manifest.json",
+				name: "Ultimate todo App?",
+				short_name: "Todo?",
+				icons: [],
+				orientation: "portrait",
+				display: "standalone",
+				start_url: ".",
+			}),
 		],
 
 		// TODO: Add the correct modules
@@ -46,8 +58,8 @@ module.exports = () => {
 						options: {
 							presets: ["@babel/preset-env"],
 							plugins: [
-								"@babel/plugin-proposal-object-rest-spread",
-								"@babel/transform-runtime",
+								// "@babel/plugin-proposal-object-rest-spread",
+								// "@babel/transform-runtime",
 							],
 						},
 					},
