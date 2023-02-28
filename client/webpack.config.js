@@ -1,7 +1,9 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { resolve } = require("path");
 const path = require("path");
-const { GenerateSW } = require("workbox-webpack-plugin");
+const { GenerateSW, InjectManifest } = require("workbox-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 module.exports = () => {
 	return {
 		mode: "development",
@@ -13,16 +15,20 @@ module.exports = () => {
 
 		// TODO: Add the correct output
 		output: {
+			// output files to the dist folder as xxxxYYYY.bundle.js
 			filename: "[name].bundle.js",
 			path: resolve(__dirname, "dist"),
 		},
 
 		// TODO: Add the correct plugins
 		plugins: [
-			new GenerateSW({
+			// create a service worker
+			new InjectManifest({
+				swSrc: "./src-sw.js",
 				// more configuration here.
 			}),
 			new HtmlWebpackPlugin(),
+			new MiniCssExtractPlugin(),
 		],
 
 		// TODO: Add the correct modules
@@ -30,7 +36,7 @@ module.exports = () => {
 			rules: [
 				{
 					test: /\.css$/i,
-					use: ["style-loader", "css-loader"],
+					use: [MiniCssExtractPlugin.loader, "css-loader"],
 				},
 				{
 					test: /\.m?js$/,
